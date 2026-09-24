@@ -3,8 +3,7 @@ kind: Service
 metadata:
   name: vproapp-service
 spec:
-  selector: vproapp
-  labels:
+  selector: 
     app: vproapp  
   ports:
   - port: 8080
