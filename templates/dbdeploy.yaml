@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.vprodb.name}}
+  labels:
+    app: {{ .Values.vprodb.name}}
+spec:
+  replicas: {{ .Values.vprodb.replicas}}
+  selector:
+    matchLabels:
+      app: {{ .Values.vprodb.name}}
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.vprodb.name}}
+
+    spec:
+      containers:
+      - name: {{ .Values.vprodb.name}}
+        image: {{ .Values.vprodb.image}}
+        volumeMounts:
+        -  mountPath: /var/lib/mysql
+           name: vpro-db-data
+        ports:
+        - containerPort: {{ .Values.vprodb.port}}
+          name: vprodb-port
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: db-pass  
+      volumes:
+        - name: vpro-db-data
+          persistentVolumeClaim:
+            claimName: db-pv-claim   
+
+
+      initContainers:
+        - name: busybox
+          image: busybox:latest
+          args: ["rm", "-rf", "/var/lib/mysql/lost+found"]
+          volumeMounts:
+          - name: vpro-db-data
+            mountPath: /var/lib/mysql
+              
+

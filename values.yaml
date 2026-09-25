@@ -1,0 +1,50 @@
+vproapp:
+  name: vproapp
+  replicas: 1
+  image: beingmclovin/vprofileapp
+  port: 8080
+
+vprodb:
+  name: vprodb
+  replicas: 1
+  image: beingmclovin/vprofiledb
+  port: 3306
+
+memecached:
+  name: vpromc
+  replicas: 1
+  image: memcached
+  port: 11211
+
+rabbitmq:
+  name: vprormq
+  replicas: 1
+  image: rabbitmq
+  port: 5672
+
+appservice:
+  name: vproapp-service
+  port: 8080
+  selector:
+    app: vproapp
+
+dbservice:
+  name: vprodb
+  port: 3306
+  selector:
+    app: vprodb
+
+memecachedservice:  
+  name: vprocache01
+  port: 11211
+  selector:
+    app: vpromc
+
+rabbitmqservice:
+  name: vpromq01
+  port: 5672
+  selector:
+    app: vprormq
+
+          
+
